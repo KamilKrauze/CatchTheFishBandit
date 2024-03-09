@@ -10,7 +10,8 @@ COPY *.config.js* /home/
 COPY templates/*.* /home/templates/
 COPY static /home/static/ 
 
-RUN npm install
+# FROM 
+# RUN npm install
 # RUN npm run create-css
 
 ENTRYPOINT ["python"]
