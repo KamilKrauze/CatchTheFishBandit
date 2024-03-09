@@ -61,7 +61,7 @@ jobs:
 
       - name: SSH into VM
         run: |
-          gcloud compute ssh --project=${{ secrets.GCLOUD_PROJECT_ID }} \
+          gcloud compute ssh --project=quackedup \
             --zone=${{ env.VM_REGION }} ${{ env.VM_NAME }} \
             --quiet \
             --command="sudo docker stop frontend; \
