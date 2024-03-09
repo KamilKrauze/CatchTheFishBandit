@@ -12,7 +12,7 @@ env:
   IMAGE_NAME: catchthefishbandit
   TAG: geo-router-api
 
-  PACKAGE_NAME: env.REGISTRY/env.USERNAME/env.IMAGE_NAME/env.TAG
+  PACKAGE_NAME: env.REGISTRY/env.USERNAME/env.IMAGE_NAME:env.TAG
 
   VM_NAME: geo-router
   VM_REGION: europe-west1-b
