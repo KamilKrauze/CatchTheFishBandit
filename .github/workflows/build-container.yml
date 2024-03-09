@@ -1,12 +1,12 @@
 name: Build and Push Docker Image
 
 on:
-
   workflow_dispatch:
     inputs:
       name:
         description: 'Builds a new docker container from the current branch'
         default: 'New Deployment'
+        required: true
         type: string
 
 jobs:
