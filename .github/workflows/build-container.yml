@@ -19,7 +19,7 @@ env:
   IMAGE_NAME: catchthefishbandit
   TAG: frontend
 
-  VM_NAME: frontend
+  VM_NAME: front-end
   VM_REGION: europe-west1-b
 
 
