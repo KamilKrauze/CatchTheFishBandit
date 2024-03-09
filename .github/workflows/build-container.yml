@@ -61,7 +61,4 @@ jobs:
 
       - name: SSH into VM
         run: |
-        gcloud compute ssh --project=${{ secrets.GCLOUD_PROJECT_ID }} \
-          --zone=${{ env.VM_REGION }} ${{ secrets.VM_NAME }} \
-          --quiet \ 
-          --command="sudo docker stop frontend; sudo docker rm frontend; sudo docker image rm ghcr.io/kamilkrauze/catchthefishbandit:frontend; sudo docker pull ghcr.io/kamilkrauze/catchthefishbandit:frontend; sudo docker run -itd -p 80:80 --name frontend ghcr.io/kamilkrauze/catchthefishbandit:frontend;"
+        gcloud compute ssh --project=${{ secrets.GCLOUD_PROJECT_ID }} --zone=${{ env.VM_REGION }} ${{ secrets.VM_NAME }} --quiet --command="sudo docker stop frontend; sudo docker rm frontend; sudo docker image rm ghcr.io/kamilkrauze/catchthefishbandit:frontend; sudo docker pull ghcr.io/kamilkrauze/catchthefishbandit:frontend; sudo docker run -itd -p 80:80 --name frontend ghcr.io/kamilkrauze/catchthefishbandit:frontend;"
