@@ -3,8 +3,8 @@ RUN pip install --upgrade pip
 COPY requirements.txt /home/
 RUN pip install -r /home/requirements.txt
 
-COPY *.py /home/
+COPY map.py /home/
 
 ENTRYPOINT ["python"]
-CMD ["/home/app.py"]
+CMD ["/home/map.py"]
 EXPOSE 80

@@ -3,24 +3,20 @@ name: Build and Push Docker Image
 on:
   push:
     branches:
-      - 'test-branch'
-
-  workflow_dispatch:
-    inputs:
-      VM_Name:
-        type: string
-        description: The name of the VM
-        required: true
+      - 'geo-router'
 
 
 env:
   REGISTRY: ghcr.io
   USERNAME: kamilkrauze
   IMAGE_NAME: catchthefishbandit
-  TAG: frontend
+  TAG: geo-router-api
 
-  VM_NAME: front-end
+  PACKAGE_NAME: env.REGISTRY/env.USERNAME/env.IMAGE_NAME/env.TAG
+
+  VM_NAME: geo-router-api
   VM_REGION: europe-west1-b
+
 
 
 jobs:
@@ -64,8 +60,8 @@ jobs:
           gcloud compute ssh --project=${{ secrets.GCLOUD_PROJECT_ID }} \
             --zone=${{ env.VM_REGION }} ${{ env.VM_NAME }} \
             --quiet \
-            --command="sudo docker stop frontend; \
-              sudo docker rm frontend; \
-              sudo docker image rm ghcr.io/kamilkrauze/catchthefishbandit:frontend; \
-              sudo docker pull ghcr.io/kamilkrauze/catchthefishbandit:frontend; \
-              sudo docker run -itd -p 80:80 --name frontend ghcr.io/kamilkrauze/catchthefishbandit:frontend;"
+            --command="sudo docker stop georouter-api; \
+              sudo docker rm georouter-api; \
+              sudo docker image rm ${{ env.PACKAGE_NAME }}; \
+              sudo docker pull ${{ env.PACKAGE_NAME }}; \
+              sudo docker run -itd -p 80:80 --name georouter-api ${{ env.PACKAGE_NAME }};"

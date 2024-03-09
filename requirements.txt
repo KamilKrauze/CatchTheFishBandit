@@ -4,3 +4,4 @@ folium
 numpy
 flask
 requests
+pandas
