@@ -2,7 +2,7 @@ import requests
 import json
 from flask import Flask, render_template
 
-app = Flask(__name__, static_folder='static/css')
+app = Flask(__name__, static_folder='static')
 app.debug = True
 
 @app.route('/')
