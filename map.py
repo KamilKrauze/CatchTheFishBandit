@@ -6,9 +6,21 @@ import geocoder
 from geopy.distance import great_circle 
 import requests
 import json
+from flask import Flask
+from geopy.geocoders import Photon
 
-distance = 0
-duration = 0
+app = Flask(__name__)
+
+df_sites = pd.DataFrame(
+        [['A24A0579',              52.926777, -1.215878],
+        ['AH323609',              51.1488168, 0.8735929],
+        ['AB421861',              52.9200018, -1.4757001],
+        ['AE540873',              53.2274933, -4.1245217],
+        ['AD003631',              50.8551456, 0.5774327]],
+        columns=pd.Index(['Identification', 'Latitude', 'Longitude'], name='ATMs')
+    )
+
+geolocator = Photon(user_agent="measurements")
 
 def get_directions_response(lat1, long1, lat2, long2):
    url = "https://api.openrouteservice.org/v2/directions/driving-car"
@@ -29,59 +41,72 @@ def get_duration(lat1, long1, lat2, long2):
    data = json.loads(response.text)
    return data["features"][0]["properties"]["segments"][0]["duration"]
 
-location = geocoder.ip("me").latlng
+def create_map(location):
+    distance = 0
+    duration = 0
 
-df_sites = pd.DataFrame(
-    [['A24A0579',              52.926777, -1.215878],
-     ['AH323609',              51.1488168, 0.8735929],
-     ['AB421861',              52.9200018, -1.4757001],
-     ['AE540873',              53.2274933, -4.1245217],
-     ['AD003631',              50.8551456, 0.5774327]],
-    columns=pd.Index(['Identification', 'Latitude', 'Longitude'], name='ATMs')
-)
+    visited_atms = []
 
-visited_atms = []
+    current_longitude = location[1]
+    current_latitude = location[0]
 
-current_longitude = location[1]
-current_latitude = location[0]
-
-while len(visited_atms) < df_sites.shape[0]:
-    current_distance = 10000000000
-    temp_position = "start"
-    temp_longitude = current_longitude
-    temp_latitude = current_latitude 
-    for atm_1 in df_sites.itertuples(): 
-        if great_circle([current_latitude, current_longitude], [atm_1.Latitude, atm_1.Longitude]).km < current_distance and atm_1.Identification not in visited_atms:
-            current_distance = great_circle([current_latitude, current_longitude], [atm_1.Latitude, atm_1.Longitude]).km
-            temp_position = atm_1.Identification
-            temp_location = [atm_1.Latitude, atm_1.Longitude]
-    visited_atms.append(temp_position)
-    current_longitude = temp_longitude
-    current_latitude = temp_latitude
-    distance += current_distance
+    while len(visited_atms) < df_sites.shape[0]:
+        current_distance = 10000000000
+        temp_position = "start"
+        temp_longitude = current_longitude
+        temp_latitude = current_latitude 
+        for atm_1 in df_sites.itertuples(): 
+            if great_circle([current_latitude, current_longitude], [atm_1.Latitude, atm_1.Longitude]).km < current_distance and atm_1.Identification not in visited_atms:
+                current_distance = great_circle([current_latitude, current_longitude], [atm_1.Latitude, atm_1.Longitude]).km
+                temp_position = atm_1.Identification
+                temp_location = [atm_1.Latitude, atm_1.Longitude]
+        visited_atms.append(temp_position)
+        current_longitude = temp_longitude
+        current_latitude = temp_latitude
+        distance += current_distance
 
 
-# initialize the map and store it in a m object
-m = folium.Map(location = [location[0], location[1]], zoom_start = 10)
- 
-m.add_child(folium.Marker(location=[location[0], location[1]],tooltip="Current location",icon=folium.Icon(color='red')))
-folium.PolyLine(get_directions_response(location[0], location[1], df_sites[df_sites.Identification==visited_atms[0]].Latitude.item(), df_sites[df_sites.Identification==visited_atms[0]].Longitude.item())).add_to(m) 
-duration += get_duration(location[0], location[1], df_sites[df_sites.Identification==visited_atms[0]].Latitude.item(), df_sites[df_sites.Identification==visited_atms[0]].Longitude.item())
+    # initialize the map and store it in a m object
+    m = folium.Map(location = [location[0], location[1]], zoom_start = 10)
+    
+    m.add_child(folium.Marker(location=[location[0], location[1]],tooltip="Current location",icon=folium.Icon(color='red')))
+    folium.PolyLine(get_directions_response(location[0], location[1], df_sites[df_sites.Identification==visited_atms[0]].Latitude.item(), df_sites[df_sites.Identification==visited_atms[0]].Longitude.item())).add_to(m) 
+    duration += get_duration(location[0], location[1], df_sites[df_sites.Identification==visited_atms[0]].Latitude.item(), df_sites[df_sites.Identification==visited_atms[0]].Longitude.item())
 
-for index, atm in enumerate(visited_atms): 
-    curr_atm = df_sites[df_sites['Identification'] == atm]
+    for index, atm in enumerate(visited_atms): 
+        curr_atm = df_sites[df_sites['Identification'] == atm]
 
-    m.add_child(folium.Marker(location=[curr_atm.Latitude, curr_atm.Longitude],tooltip=atm,icon=folium.Icon(color='blue')))
+        m.add_child(folium.Marker(location=[curr_atm.Latitude, curr_atm.Longitude],tooltip=atm,icon=folium.Icon(color='blue')))
 
-    if index + 1 < len(visited_atms):
-        folium.PolyLine(get_directions_response(df_sites[df_sites.Identification==atm].Latitude.item(), df_sites[df_sites.Identification==atm].Longitude.item(), df_sites[df_sites.Identification==visited_atms[index+1]].Latitude.item(), df_sites[df_sites.Identification==visited_atms[index+1]].Longitude.item())).add_to(m) 
-        duration += get_duration(df_sites[df_sites.Identification==atm].Latitude.item(), df_sites[df_sites.Identification==atm].Longitude.item(), df_sites[df_sites.Identification==visited_atms[index+1]].Latitude.item(), df_sites[df_sites.Identification==visited_atms[index+1]].Longitude.item())
+        if index + 1 < len(visited_atms):
+            folium.PolyLine(get_directions_response(df_sites[df_sites.Identification==atm].Latitude.item(), df_sites[df_sites.Identification==atm].Longitude.item(), df_sites[df_sites.Identification==visited_atms[index+1]].Latitude.item(), df_sites[df_sites.Identification==visited_atms[index+1]].Longitude.item())).add_to(m) 
+            duration += get_duration(df_sites[df_sites.Identification==atm].Latitude.item(), df_sites[df_sites.Identification==atm].Longitude.item(), df_sites[df_sites.Identification==visited_atms[index+1]].Latitude.item(), df_sites[df_sites.Identification==visited_atms[index+1]].Longitude.item())
 
-folium.map.Marker(location,
-    icon=DivIcon(
-        html='<div style="font-size: 20pt">total distance: ' + str(distance) + 'km</div><div style="font-size: 20pt">total duration: ' + str(duration/60) + 'h</div>',
-        )
-    ).add_to(m)
+    folium.map.Marker(location,
+        icon=DivIcon(
+            html='<div style="font-size: 20pt">total distance: ' + str(distance) + 'km</div><div style="font-size: 20pt">total duration: ' + str(duration/60) + 'h</div>',
+            )
+        ).add_to(m)
+    return m.get_root().render()
+
+@app.route('/id/<atmid>')
+def atmid_search(atmid):
+    if atmid is None:
+        return create_map(geocoder.ip("me").latlng)
+    else:
+        return create_map([df_sites[df_sites.Identification==atmid].Latitude.item(), df_sites[df_sites.Identification==atmid].Longitude.item()])
 
 # show the map
-m.save('my_map.html')
+#m.save('my_map.html')
+@app.route('/address/<address>')
+def addr_search(address):
+    if address is None:
+        return create_map(geocoder.ip("me").latlng)
+    else:
+        location = geolocator.geocode(address)
+        return create_map([location.latitude, location.longitude])
+
+    
+
+if __name__ == '__main__':
+    app.run(port=80, host="0.0.0.0", debug=True)
