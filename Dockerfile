@@ -6,5 +6,5 @@ RUN pip install -r /home/requirements.txt
 COPY *.py /home/
 
 ENTRYPOINT ["python"]
-CMD ["/home/application.py"]
+CMD ["/home/app.py"]
 EXPOSE 80
