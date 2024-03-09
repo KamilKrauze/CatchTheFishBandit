@@ -14,7 +14,7 @@ env:
 
   PACKAGE_NAME: env.REGISTRY/env.USERNAME/env.IMAGE_NAME/env.TAG
 
-  VM_NAME: geo-router-api
+  VM_NAME: geo-router
   VM_REGION: europe-west1-b
 
 
