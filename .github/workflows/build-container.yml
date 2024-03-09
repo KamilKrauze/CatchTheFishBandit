@@ -10,7 +10,7 @@ env:
   REGISTRY: ghcr.io
   USERNAME: kamilkrauze
   IMAGE_NAME: catchthefishbandit
-  TAG: geo-router-api
+  TAG: georouter-api
 
   PACKAGE_NAME: env.REGISTRY/env.USERNAME/env.IMAGE_NAME:env.TAG
 
