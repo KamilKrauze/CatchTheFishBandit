@@ -2,7 +2,6 @@
 import pandas as pd
 from folium.features import DivIcon
 import folium
-import random
 import geocoder
 from geopy.distance import great_circle 
 import requests
