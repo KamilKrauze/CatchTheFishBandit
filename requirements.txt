@@ -1,0 +1,6 @@
+geocoder
+geopy
+folium
+numpy
+flask
+requests
