@@ -1,4 +1,4 @@
-FROM python:3.11
+FROM python:3.11.5
 RUN pip install --upgrade pip
 COPY requirements.txt /home/
 RUN pip install -r /home/requirements.txt
