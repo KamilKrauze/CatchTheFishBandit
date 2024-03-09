@@ -11,7 +11,7 @@ COPY templates/*.* /home/templates/
 COPY static /home/static/ 
 
 RUN npm install
-RUN npm run create-css
+# RUN npm run create-css
 
 ENTRYPOINT ["python"]
 CMD ["/home/app.py"]
