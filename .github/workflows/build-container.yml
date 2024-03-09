@@ -1,0 +1,45 @@
+name: Build and Push Docker Image
+
+on:
+  workflow_dispatch:
+    inputs:
+      name:
+        description: 'Builds a new docker container from the current branch'
+        default: 'New Deployment'
+        type: string
+
+jobs:
+  build_and_push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Log-in to container registry
+        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push the image
+        run: |
+          docker build . --tag ghcr.io/kamilkrauze/catchthefishbandit:test
+          docker push ghcr.io/kamilkrauze/catchthefishbandit:test
+
+  updvm-container:
+    runs-on: ubuntu-latest
+    needs: [build_and_push]
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v0.2.0
+        with:
+          service_account_key: ${{ secrets.GCLOUD_JSON_KEY }}
+
+      - name: Authenticate on GCP
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.GCLOUD_JSON_KEY }}'
