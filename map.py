@@ -1,14 +1,15 @@
+
 from geopy.geocoders import Nominatim
 import pandas as pd
 import requests
 import folium
-
+from folium import IFrame
 import time
 
 def get_location_coordinates(address):
-   geolocator = Nominatim(user_agent="YourAppName (youremail@example.com)")
+   geolocator = Nominatim(user_agent="(mail@example.com)")
    location = geolocator.geocode(address)
-   time.sleep(1)  # add a delay between requests
+   time.sleep(1)
    return location.latitude, location.longitude
 
 def get_directions_response(address1, address2, mode='drive'):
@@ -31,11 +32,18 @@ def create_map(response):
    m = folium.Map()
    # add marker for the start and ending points
    for point in [points[0], points[-1]]:
-      folium.Marker(
-          location=point,
-          popup=folium.Popup('popup text here', max_width=250),
-          tooltip='tooltip text here'
-      ).add_to(m)
+     # read the content of popup.html
+     with open('./templates/popup.html', 'r') as f:
+        popup_html = f.read()
+     # create an IFrame using the HTML content
+     iframe = IFrame(html=popup_html, width=500, height=300)
+     # create a Popup using the IFrame
+     popup = folium.Popup(iframe, max_width=500)
+     folium.Marker(
+        location=point,
+        popup=popup,
+        tooltip='tooltip text'
+     ).add_to(m)
    # add the lines
    folium.PolyLine(points, weight=5, opacity=1).add_to(m)
    # create optimal zoom
@@ -44,5 +52,6 @@ def create_map(response):
    ne = df[['Lat', 'Lon']].max().values.tolist()
    m.fit_bounds([sw, ne])
    return m
+
 m = create_map(response)
 m.save('static/maps/map.html')
