@@ -23,6 +23,9 @@ df_sites = pd.DataFrame(
 
 geolocator = Photon(user_agent="measurements")
 
+distance = 0
+duration = 0
+
 def get_directions_response(lat1, long1, lat2, long2):
     url = "https://api.openrouteservice.org/v2/directions/driving-car"
     key = "5b3ce3597851110001cf62481da466da01ce401fb67b1356de21d338"
@@ -51,9 +54,8 @@ def get_duration(lat1, long1, lat2, long2):
     return time_traveled
 
 def create_map(location):
-    distance = 0
-    duration = 0
-
+    global distance
+    global duration
     visited_atms = []
 
     current_longitude = location[1]
@@ -96,14 +98,6 @@ def create_map(location):
         if index + 1 < len(visited_atms):
             folium.PolyLine(get_directions_response(df_sites[df_sites.Identification==atm].Latitude.item(), df_sites[df_sites.Identification==atm].Longitude.item(), df_sites[df_sites.Identification==visited_atms[index+1]].Latitude.item(), df_sites[df_sites.Identification==visited_atms[index+1]].Longitude.item())).add_to(m) 
             duration += get_duration(df_sites[df_sites.Identification==atm].Latitude.item(), df_sites[df_sites.Identification==atm].Longitude.item(), df_sites[df_sites.Identification==visited_atms[index+1]].Latitude.item(), df_sites[df_sites.Identification==visited_atms[index+1]].Longitude.item())
-
-    folium.map.Marker((location[0]+0.1, location[1]-0.1),
-        icon=DivIcon(
-            html='<div style="background-color: #EBEBEB; width:300px;"><div style="font-size: 10pt">total distance: ' + str(distance) + 'km</div><div style="font-size: 10pt">total duration: ' + str(duration/60) + 'h</div></div>',
-            ),
-        icon_size=(100, 100),
-        icon_anchor=(0, 0)
-        ).add_to(m)
     
     return m.get_root().render()
 
@@ -111,15 +105,30 @@ def create_map(location):
 def atmid_search(atmid):
     return create_map([df_sites[df_sites.Identification==atmid].Latitude.item(), df_sites[df_sites.Identification==atmid].Longitude.item()])
 
+@app.route('/id/<atmid>/distanceandduration')
+def atmid_dump(atmid):
+    create_map([df_sites[df_sites.Identification==atmid].Latitude.item(), df_sites[df_sites.Identification==atmid].Longitude.item()])
+    return json.dumps('distance: ' + str(distance) + 'duration: ' + str(duration))
+
 @app.route('/address/<address>')
 def addr_search(address):
     location = geolocator.geocode(address)
     return create_map([location.latitude, location.longitude])
 
+@app.route('/address/<address>/distanceandduration')
+def addr_dump(address):
+    location = geolocator.geocode(address)
+    create_map([location.latitude, location.longitude])
+    return json.dumps('distance: ' + str(distance) + 'duration: ' + str(duration))
+
 @app.route('/')
 def home():
     return create_map(geocoder.ip("me").latlng)
-      
+
+@app.route('/distanceandduration')
+def home_dump():
+    create_map(geocoder.ip("me").latlng) 
+    return json.dumps('distance: ' + str(distance) + 'duration: ' + str(duration))
 
 if __name__ == '__main__':
     app.run(port=80, host="0.0.0.0", debug=True)
