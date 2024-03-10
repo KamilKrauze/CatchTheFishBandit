@@ -8,6 +8,7 @@ import requests
 import json
 from flask import Flask
 from geopy.geocoders import Photon
+from folium import IFrame
 
 app = Flask(__name__)
 
@@ -84,7 +85,13 @@ def create_map(location):
     for index, atm in enumerate(visited_atms): 
         curr_atm = df_sites[df_sites['Identification'] == atm]
 
-        m.add_child(folium.Marker(location=[curr_atm.Latitude, curr_atm.Longitude],tooltip=atm,icon=folium.Icon(color='blue')))
+        with open('./popup.html', 'r') as f:
+            popup_html = f.read()
+        # create an IFrame using the HTML content
+        iframe = IFrame(html=popup_html, width=500, height=300)
+        # create a Popup using the IFrame
+        popup = folium.Popup(iframe, max_width=500)
+        m.add_child(folium.Marker(location=[curr_atm.Latitude, curr_atm.Longitude],popup=popup,tooltip=atm,icon=folium.Icon(color='blue')))
 
         if index + 1 < len(visited_atms):
             folium.PolyLine(get_directions_response(df_sites[df_sites.Identification==atm].Latitude.item(), df_sites[df_sites.Identification==atm].Longitude.item(), df_sites[df_sites.Identification==visited_atms[index+1]].Latitude.item(), df_sites[df_sites.Identification==visited_atms[index+1]].Longitude.item())).add_to(m) 
