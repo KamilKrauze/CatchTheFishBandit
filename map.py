@@ -91,22 +91,17 @@ def create_map(location):
 
 @app.route('/id/<atmid>')
 def atmid_search(atmid):
-    if atmid is None:
-        return create_map(geocoder.ip("me").latlng)
-    else:
-        return create_map([df_sites[df_sites.Identification==atmid].Latitude.item(), df_sites[df_sites.Identification==atmid].Longitude.item()])
+    return create_map([df_sites[df_sites.Identification==atmid].Latitude.item(), df_sites[df_sites.Identification==atmid].Longitude.item()])
 
-# show the map
-#m.save('my_map.html')
 @app.route('/address/<address>')
 def addr_search(address):
-    if address is None:
-        return create_map(geocoder.ip("me").latlng)
-    else:
-        location = geolocator.geocode(address)
-        return create_map([location.latitude, location.longitude])
+    location = geolocator.geocode(address)
+    return create_map([location.latitude, location.longitude])
 
-    
+@app.route('/')
+def home():
+    return create_map(geocoder.ip("me").latlng)
+      
 
 if __name__ == '__main__':
     app.run(port=80, host="0.0.0.0", debug=True)
