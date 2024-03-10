@@ -9,18 +9,27 @@ import json
 from flask import Flask
 from geopy.geocoders import Photon
 from folium import IFrame
-import os
 
 app = Flask(__name__)
 
-df_sites = pd.DataFrame(
-        [['A24A0579',              52.926777, -1.215878],
-        ['AH323609',              51.1488168, 0.8735929],
-        ['AB421861',              52.9200018, -1.4757001],
-        ['AE540873',              53.2274933, -4.1245217],
-        ['AD003631',              50.8551456, 0.5774327]],
-        columns=pd.Index(['Identification', 'Latitude', 'Longitude'], name='ATMs')
-    )
+def load_atms():
+    url = "http://geodata-api.quack-team.com/"
+    response = requests.get(url)
+    df = pd.DataFrame(columns=pd.Index(['Identification', 'Latitude', 'Longitude'], name='ATMs'))
+    loc = 0
+
+    if response.status_code == 200:
+        data = json.loads(response.text)
+        
+        atms = data['ATMs']
+
+        for atm in atms:     
+            df.loc[loc] = [atm['ID'], atm['Latitude'], atm['Longitude']]
+            loc += 1
+
+    return df
+
+df_sites = load_atms()
 
 geolocator = Photon(user_agent="measurements")
 
@@ -88,8 +97,7 @@ def create_map(location):
     for index, atm in enumerate(visited_atms): 
         curr_atm = df_sites[df_sites['Identification'] == atm]
 
-        cd = os.path.abspath(os.getcwd())
-        with open(cd + '/popup.html', 'r') as f:
+        with open('templates/popup.html', 'r') as f:
             popup_html = f.read()
         # create an IFrame using the HTML content
         iframe = IFrame(html=popup_html, width=500, height=300)
