@@ -1,5 +1,5 @@
 import json
-from flask import Flask, jsonify
+from flask import Flask, jsonify, url_for, json
 
 # writing to json
 app = Flask(__name__)
@@ -9,7 +9,7 @@ app.debug = True
 @app.route('/')
 def get_atms():
     # Define JSON file
-    with open("./HSBC_atms.json", "r") as json_file:
+    with open("HSBC_atms.json") as json_file:
 
         # Convert JSON file to Python
         data = json.load(json_file)
