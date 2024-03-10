@@ -48,26 +48,33 @@ def get_atms():
                 longitude.append(j['Location']['PostalAddress']['GeoLocation']['GeographicCoordinates']['Longitude'])
                 postcode.append(j['Location']['PostalAddress']['PostCode'])
 
-    latitude = list(map(float, latitude))
-    longitude = list(map(float, longitude))
+        points = []
+        for i in range(len(latitude)):
+            points.append({'lats':latitude[i], 'longs': longitude[i]})
 
-    # removing extra fluff
-    sep = ','
-    for s in range(len(street)):
-        street[s] = street[s].split(sep, 1)[0]
+        print(jsonify(points))
 
-    for t in range(len(town)):
-        town[t] = town[t].split(sep, 1)[0]
-        town[t] = town[t].title()
+    # latitude = list(map(float, latitude))
+    # longitude = list(map(float, longitude))
 
-    # making marker points list
-    marker_points = []
-    for i in range(len(latitude)):
-        marker_points.append({'Latitude': latitude[i], 'Longitude': longitude[i], 'Brand': brand[i], 'Street': street[i],
-                            'Town': town[i], 'Country': country[i], 'PostCode': postcode[i], 'SupportedLanguages': languages[i],
-                            'SupportedCurrency': currencies[i], 'ATMServices': services[i], 'ID': id[i]})
+    # # removing extra fluff
+    # sep = ','
+    # for s in range(len(street)):
+    #     street[s] = street[s].split(sep, 1)[0]
 
-    return jsonify({'data':marker_points})
+    # for t in range(len(town)):
+    #     town[t] = town[t].split(sep, 1)[0]
+    #     town[t] = town[t].title()
+
+    # # making marker points list
+    # marker_points = []
+    # for i in range(len(latitude)):
+    #     marker_points.append({'Latitude': latitude[i], 'Longitude': longitude[i], 'Brand': brand[i], 'Street': street[i],
+    #                         'Town': town[i], 'Country': country[i], 'PostCode': postcode[i], 'SupportedLanguages': languages[i],
+    #                         'SupportedCurrency': currencies[i], 'ATMServices': services[i], 'ID': id[i]})
+
+    return jsonify(points)
+    # return jsonify({'data':marker_points})
 
 
 if __name__ == '__main__':
