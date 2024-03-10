@@ -31,9 +31,9 @@ def get_atm_latlng():
 
         points = []
         for i in range(len(latitude)):
-            points.append({'lats':latitude[i], 'longs': longitude[i]})
+            points.append({'id': id[i], 'lats':latitude[i], 'longs': longitude[i]})
 
-        print(jsonify(points))
+        return jsonify({'ATMs': points})
 
 @app.route('/')
 def get_atms():
