@@ -1,15 +1,12 @@
 import json
-from flask import Flask, jsonify, url_for, json
+from flask import Flask, jsonify, json
+from flask_cors import CORS
+
 
 # writing to json
 app = Flask(__name__)
 app.debug = True
-
-# @app.route('/')
-# def index():
-
-#     return 'Hello World!'
-
+CORS(app)
 
 @app.route('/')
 def get_atms():
@@ -80,8 +77,3 @@ def get_atms():
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=80)
-
-# writing to csv
-#markers = pd.DataFrame(marker_points, columns=['Latitude', 'Longitude', 'Brand', 'Street', 'Town', 'Country', 'PostCode',
-#'SupportedLanguages', "SupportedCurrency", "ATMServices", "ID"])
-#markers.to_csv('atms.csv', index=False)
