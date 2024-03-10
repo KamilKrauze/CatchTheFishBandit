@@ -63,7 +63,7 @@ def get_duration(lat1, long1, lat2, long2):
 
     return time_traveled
 
-def create_map(location):
+def create_map(location, limit):
     global distance
     global duration
     visited_atms = []
@@ -71,7 +71,7 @@ def create_map(location):
     current_longitude = location[1]
     current_latitude = location[0]
 
-    while len(visited_atms) < 10:#df_sites.shape[0]:
+    while len(visited_atms) <= int(limit) and len(visited_atms) < df_sites.shape[0]:
         current_distance = 10000000000
         temp_position = "start"
         temp_longitude = current_longitude
@@ -111,33 +111,33 @@ def create_map(location):
     
     return m.get_root().render()
 
-@app.route('/id/<atmid>')
-def atmid_search(atmid):
-    return create_map([df_sites[df_sites.Identification==atmid].Latitude.item(), df_sites[df_sites.Identification==atmid].Longitude.item()])
+@app.route('/id/<atmid>/<limit>')
+def atmid_search(atmid, limit):
+    return create_map([df_sites[df_sites.Identification==atmid].Latitude.item(), df_sites[df_sites.Identification==atmid].Longitude.item()], limit)
 
-@app.route('/id/<atmid>/distanceandduration')
-def atmid_dump(atmid):
-    create_map([df_sites[df_sites.Identification==atmid].Latitude.item(), df_sites[df_sites.Identification==atmid].Longitude.item()])
+@app.route('/id/<atmid>/<limit>/distanceandduration')
+def atmid_dump(atmid, limit):
+    create_map([df_sites[df_sites.Identification==atmid].Latitude.item(), df_sites[df_sites.Identification==atmid].Longitude.item()], limit)
     return json.dumps('distance: ' + str(distance) + 'duration: ' + str(duration))
 
-@app.route('/address/<address>')
-def addr_search(address):
+@app.route('/address/<address>/<limit>')
+def addr_search(address, limit):
     location = geolocator.geocode(address)
-    return create_map([location.latitude, location.longitude])
+    return create_map([location.latitude, location.longitude], limit)
 
-@app.route('/address/<address>/distanceandduration')
-def addr_dump(address):
+@app.route('/address/<address>/<limit>/distanceandduration')
+def addr_dump(address, limit):
     location = geolocator.geocode(address)
-    create_map([location.latitude, location.longitude])
+    create_map([location.latitude, location.longitude], limit)
     return json.dumps('distance: ' + str(distance) + 'duration: ' + str(duration))
 
-@app.route('/')
-def home():
-    return create_map(geocoder.ip("me").latlng)
+@app.route('/<limit>')
+def home(limit):
+    return create_map(geocoder.ip("me").latlng, limit)
 
-@app.route('/distanceandduration')
-def home_dump():
-    create_map(geocoder.ip("me").latlng) 
+@app.route('/<limit>/distanceandduration')
+def home_dump(limit):
+    create_map(geocoder.ip("me").latlng, limit) 
     return json.dumps('distance: ' + str(distance) + 'duration: ' + str(duration))
 
 if __name__ == '__main__':
