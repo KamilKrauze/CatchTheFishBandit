@@ -1,0 +1,85 @@
+name: Remove all containers on VMs(Front-end)
+
+on:
+
+  workflow_dispatch:
+    inputs:
+      VM_Name:
+        type: string
+        description: Empty text
+        required: true
+
+
+env:
+  REGISTRY: ghcr.io
+  USERNAME: kamilkrauze
+  IMAGE_NAME: catchthefishbandit
+  
+  TAG1: frontend
+  TAG2: georouter-api
+  TAG3: geodata-api
+
+  VM_NAME1: front-end
+  VM_NAME2: geo-router
+  VM_NAME3: geodata
+
+  VM_REGION: europe-west1-b
+
+
+jobs:
+  Remove-container-on-frontend-VM:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup GCP SDK
+        uses: google-github-actions/setup-gcloud@v0.2.0
+        with:
+          service_account_key: ${{ secrets.GCLOUD_JSON_KEY }}
+
+      - name: Authenticate on GCP
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.GCLOUD_JSON_KEY }}'
+
+      - name: Remove container
+        run: |
+          gcloud compute ssh --project=${{ secrets.GCLOUD_PROJECT_ID }} \
+              --zone=${{ env.VM_REGION }} ${{ env.VM_NAME1 }} \
+              --command="sudo docker stop $(sudo docker ps -aq); sudo docker rm $(sudo docker ps -aq)"
+
+  remove-container-on-routermapper-VM:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup GCP SDK
+        uses: google-github-actions/setup-gcloud@v0.2.0
+        with:
+          service_account_key: ${{ secrets.GCLOUD_JSON_KEY }}
+
+      - name: Authenticate on GCP
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.GCLOUD_JSON_KEY }}'
+
+      - name: Remove container
+        run: |
+          gcloud compute ssh --project=${{ secrets.GCLOUD_PROJECT_ID }} \
+              --zone=${{ env.VM_REGION }} ${{ env.VM_NAME2 }} \
+              --command="sudo docker stop $(sudo docker ps -aq); sudo docker rm $(sudo docker ps -aq)"
+
+  remove-container-on-geodata-VM:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup GCP SDK
+        uses: google-github-actions/setup-gcloud@v0.2.0
+        with:
+          service_account_key: ${{ secrets.GCLOUD_JSON_KEY }}
+
+      - name: Authenticate on GCP
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.GCLOUD_JSON_KEY }}'
+
+      - name: Remove container
+        run: |
+          gcloud compute ssh --project=${{ secrets.GCLOUD_PROJECT_ID }} \
+              --zone=${{ env.VM_REGION }} ${{ env.VM_NAME2 }} \
+              --command="sudo docker stop $(sudo docker ps -aq); sudo docker rm $(sudo docker ps -aq)"
