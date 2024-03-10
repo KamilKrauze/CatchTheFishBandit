@@ -13,18 +13,19 @@ from folium import IFrame
 app = Flask(__name__, template_folder="templates")
 
 def load_atms():
-    url = "http://geodata-api.quack-team.com/"
+    url = "http://geodata-api.quack-team.com/latlng"
     response = requests.get(url)
     df = pd.DataFrame(columns=pd.Index(['Identification', 'Latitude', 'Longitude'], name='ATMs'))
     loc = 0
 
     if response.status_code == 200:
-        data = json.loads(response.text)
+        data = json.loads(response.text)   
+        print(data)  
         
         atms = data['ATMs']
 
-        for atm in atms:     
-            df.loc[loc] = [atm['ID'], atm['Latitude'], atm['Longitude']]
+        for atm in atms:
+            df.loc[loc] = [atm['id'], atm['lats'], atm['longs']]
             loc += 1
 
     return df
