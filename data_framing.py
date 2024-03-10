@@ -67,7 +67,7 @@ def get_atms():
                             'Town': town[i], 'Country': country[i], 'PostCode': postcode[i], 'SupportedLanguages': languages[i],
                             'SupportedCurrency': currencies[i], 'ATMServices': services[i], 'ID': id[i]})
 
-    return jsonify(marker_points, status=200, mimetype='application/json')
+    return jsonify({'data':marker_points})
 
 
 if __name__ == '__main__':
