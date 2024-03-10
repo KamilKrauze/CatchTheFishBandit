@@ -68,5 +68,4 @@ jobs:
               sudo docker rm geodata-api; \
               sudo docker image rm ${{env.REGISTRY}}/${{env.USERNAME}}/${{env.IMAGE_NAME}}:${{env.TAG}}; \
               sudo docker pull ${{env.REGISTRY}}/${{env.USERNAME}}/${{env.IMAGE_NAME}}:${{env.TAG}}; \
-              sudo docker run -itd -p 80:80 --name geodata-api ${{env.REGISTRY}}/${{env.USERNAME}}/${{env.IMAGE_NAME}}:${{env.TAG}}; \
-              sudo docker attach geodata-api"
+              sudo docker run -itd -p 80:80 --name geodata-api ${{env.REGISTRY}}/${{env.USERNAME}}/${{env.IMAGE_NAME}}:${{env.TAG}}"
