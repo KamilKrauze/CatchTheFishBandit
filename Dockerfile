@@ -4,6 +4,7 @@ COPY requirements.txt /home/
 RUN pip install -r /home/requirements.txt
 
 COPY map.py /home/
+COPY templates/*.* /home/templates/
 
 ENTRYPOINT ["python"]
 CMD ["/home/map.py"]
