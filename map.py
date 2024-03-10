@@ -10,7 +10,7 @@ from flask import Flask
 from geopy.geocoders import Photon
 from folium import IFrame
 
-app = Flask(__name__)
+app = Flask(__name__, template_folders = "templates")
 
 def load_atms():
     url = "http://geodata-api.quack-team.com/"
