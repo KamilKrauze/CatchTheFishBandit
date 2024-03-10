@@ -8,7 +8,7 @@ app = Flask(__name__)
 app.debug = True
 CORS(app)
 
-@app.route('/')
+@app.route('/',  methods=['GET', 'OPTIONS'])
 def get_atms():
     # Define JSON file
     with open("home/HSBC_atms.json") as json_file:
