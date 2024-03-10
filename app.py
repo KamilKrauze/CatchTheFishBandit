@@ -1,10 +1,11 @@
-# path: app.py
+#!/usr/bin/env python3
+import flask
 from flask import Flask, render_template, request, jsonify
 import requests
 from flask_cors import CORS, cross_origin
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
-debug = True
+app.debug = True
 CORS(app, resources={r"/*": {"origins": "*"}})
 
 def get_map_from_cloud(atm_id):
@@ -56,16 +57,6 @@ def geo_data():
 @app.route('/')
 def home():
     return render_template('search.html')
-
-@app.route('/generate_map', methods=['GET', 'POST'])
-def map():
-    print('Request:', request.form)
-    current_location = request.args.get('current_location')
-    atm_id = request.args.get('atm_id')
-    get_map_from_cloud(atm_id)
-    data = get_distance_and_time(atm_id)
-    print('Data:', data)
-    return render_template('custom_map.html', data=data)
 
 @app.route('/generate_map', methods=['GET', 'POST'])
 def map():
