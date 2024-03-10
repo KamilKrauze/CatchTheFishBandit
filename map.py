@@ -90,13 +90,14 @@ def create_map(location):
             folium.PolyLine(get_directions_response(df_sites[df_sites.Identification==atm].Latitude.item(), df_sites[df_sites.Identification==atm].Longitude.item(), df_sites[df_sites.Identification==visited_atms[index+1]].Latitude.item(), df_sites[df_sites.Identification==visited_atms[index+1]].Longitude.item())).add_to(m) 
             duration += get_duration(df_sites[df_sites.Identification==atm].Latitude.item(), df_sites[df_sites.Identification==atm].Longitude.item(), df_sites[df_sites.Identification==visited_atms[index+1]].Latitude.item(), df_sites[df_sites.Identification==visited_atms[index+1]].Longitude.item())
 
-    folium.map.Marker(location,
+    folium.map.Marker((location[0]+0.1, location[1]-0.1),
         icon=DivIcon(
-            html='<div style="background-color: #EBEBEB"><div style="font-size: 10pt">total distance: ' + str(distance) + 'km</div><div style="font-size: 10pt">total duration: ' + str(duration/60) + 'h</div></div>',
+            html='<div style="background-color: #EBEBEB; width:300px;"><div style="font-size: 10pt">total distance: ' + str(distance) + 'km</div><div style="font-size: 10pt">total duration: ' + str(duration/60) + 'h</div></div>',
             ),
         icon_size=(100, 100),
         icon_anchor=(0, 0)
         ).add_to(m)
+    
     return m.get_root().render()
 
 @app.route('/id/<atmid>')
