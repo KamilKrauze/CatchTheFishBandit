@@ -67,4 +67,4 @@ def map():
     return render_template('custom_map.html', data=data)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=3000) 
+    app.run(host='0.0.0.0', port=80) 
