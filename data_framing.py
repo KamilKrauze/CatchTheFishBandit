@@ -31,6 +31,8 @@ def get_atm_latlng():
 
         points = []
         for i in range(len(latitude)):
+            if id[i] == 'AB017276':
+                longitude[i] = (-1)*longitude[i]
             points.append({'id': id[i], 'lats':latitude[i], 'longs': longitude[i]})
 
         return jsonify({'ATMs': points})
@@ -71,15 +73,6 @@ def get_atms():
                 latitude.append(j['Location']['PostalAddress']['GeoLocation']['GeographicCoordinates']['Latitude'])
                 longitude.append(j['Location']['PostalAddress']['GeoLocation']['GeographicCoordinates']['Longitude'])
                 postcode.append(j['Location']['PostalAddress']['PostCode'])
-
-        points = []
-        for i in range(len(latitude)):
-            points.append({'lats':latitude[i], 'longs': longitude[i]})
-
-        print(jsonify(points))
-
-    latitude = list(map(float, latitude))
-    longitude = list(map(float, longitude))
 
     # removing extra fluff
     sep = ','
