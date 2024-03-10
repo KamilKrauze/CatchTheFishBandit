@@ -10,7 +10,7 @@ from flask import Flask
 from geopy.geocoders import Photon
 from folium import IFrame
 
-app = Flask(__name__, template_folders = "templates")
+app = Flask(__name__, template_folder="templates")
 
 def load_atms():
     url = "http://geodata-api.quack-team.com/"
@@ -71,7 +71,7 @@ def create_map(location):
     current_longitude = location[1]
     current_latitude = location[0]
 
-    while len(visited_atms) < df_sites.shape[0]:
+    while len(visited_atms) < 10:#df_sites.shape[0]:
         current_distance = 10000000000
         temp_position = "start"
         temp_longitude = current_longitude
@@ -97,7 +97,7 @@ def create_map(location):
     for index, atm in enumerate(visited_atms): 
         curr_atm = df_sites[df_sites['Identification'] == atm]
 
-        with open('/popup.html', 'r') as f:
+        with open('templates/popup.html', 'r') as f:
             popup_html = f.read()
         # create an IFrame using the HTML content
         iframe = IFrame(html=popup_html, width=500, height=300)
