@@ -9,7 +9,6 @@ import json
 from flask import Flask
 from geopy.geocoders import Photon
 from folium import IFrame
-import os
 
 app = Flask(__name__)
 
@@ -88,8 +87,7 @@ def create_map(location):
     for index, atm in enumerate(visited_atms): 
         curr_atm = df_sites[df_sites['Identification'] == atm]
 
-        cd = os.path.abspath(os.getcwd())
-        with open(cd + '/popup.html', 'r') as f:
+        with open('./templates/popup.html', 'r') as f:
             popup_html = f.read()
         # create an IFrame using the HTML content
         iframe = IFrame(html=popup_html, width=500, height=300)
