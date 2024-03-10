@@ -8,38 +8,10 @@ app = Flask(__name__)
 app.debug = True
 CORS(app)
 
-@app.route('/latlng')
-def get_atm_latlng():
+POINTS = []
 
-    with open("home/HSBC_atms.json") as json_file:
-
-        # Convert JSON file to Python
-        data = json.load(json_file)
-        data = data['data'][0]['Brand']
-
-        # initializing lists
-        latitude = []
-        longitude = []
-        id = []
-
-        # separating data into lists
-        for i in data:
-            for j in i['ATM']:
-                id.append(j['Identification'])
-                latitude.append(j['Location']['PostalAddress']['GeoLocation']['GeographicCoordinates']['Latitude'])
-                longitude.append(j['Location']['PostalAddress']['GeoLocation']['GeographicCoordinates']['Longitude'])
-
-        points = []
-        for i in range(len(latitude)):
-            if id[i] == 'AB017276':
-                longitude[i] = (-1)*longitude[i]
-            points.append({'id': id[i], 'lats':latitude[i], 'longs': longitude[i]})
-
-        return jsonify({'ATMs': points})
-
-@app.route('/')
-def get_atms():
-    # Define JSON file
+def load_json_to_mem() -> None:
+     # Define JSON file
     with open("home/HSBC_atms.json") as json_file:
 
         # Convert JSON file to Python
@@ -84,16 +56,46 @@ def get_atms():
         town[t] = town[t].title()
 
     # making marker points list
-    marker_points = []
     for i in range(len(latitude)):
         if id[i] == 'AB017276':
             longitude[i] = (-1)*longitude[i]
-        marker_points.append({'Latitude': latitude[i], 'Longitude': longitude[i], 'Brand': brand[i], 'Street': street[i],
-                            'Town': town[i], 'Country': country[i], 'PostCode': postcode[i], 'SupportedLanguages': languages[i],
-                            'SupportedCurrency': currencies[i], 'ATMServices': services[i], 'ID': id[i]})
+        POINTS.append({'Latitude': latitude[i], 'Longitude': longitude[i], 'Brand': brand[i], 'Street': street[i],
+                        'Town': town[i], 'Country': country[i], 'PostCode': postcode[i], 'SupportedLanguages': languages[i],
+                        'SupportedCurrency': currencies[i], 'ATMServices': services[i], 'ID': id[i]})
 
-    return jsonify({'ATMs': marker_points})
+
+
+@app.route('/latlng')
+def get_atm_latlng():
+
+
+
+    # initializing lists
+    id = []
+    latitude = []
+    longitude = []
+    # separating data into lists
+    for pt in POINTS:
+        id.append(pt['ID'])
+        latitude.append(pt['Latitude'])
+        longitude.append(pt['Longitude'])
+
+    # for i in range(len(latitude)):
+    #     if id[i] == 'AB017276':
+    #         longitude[i] = (-1)*longitude[i]
+    #     point.append({'id': id[i], 'lats':latitude[i], 'longs': longitude[i]})
+
+    data = []
+    for i in range(len(latitude)):
+        data.append({'id':id[i], 'lats':latitude[i], 'longs': longitude[i]})
+
+    return jsonify({'ATMs': data})
+
+@app.route('/')
+def get_atms():
+    return jsonify({'ATMs': POINTS})
 
 
 if __name__ == '__main__':
+    load_json_to_mem()
     app.run(host="0.0.0.0", port=80)
