@@ -69,11 +69,13 @@ def get_atms():
     # making marker points list
     marker_points = []
     for i in range(len(latitude)):
+        if id[i] == 'AB017276':
+            longitude[i] = (-1)*longitude[i]
         marker_points.append({'Latitude': latitude[i], 'Longitude': longitude[i], 'Brand': brand[i], 'Street': street[i],
                             'Town': town[i], 'Country': country[i], 'PostCode': postcode[i], 'SupportedLanguages': languages[i],
                             'SupportedCurrency': currencies[i], 'ATMServices': services[i], 'ID': id[i]})
 
-    return jsonify({'ATMs':marker_points})
+    return jsonify({'ATMs': marker_points})
 
 
 if __name__ == '__main__':
