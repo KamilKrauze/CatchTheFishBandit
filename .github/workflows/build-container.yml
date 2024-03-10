@@ -12,8 +12,6 @@ env:
   IMAGE_NAME: catchthefishbandit
   TAG: georouter-api
 
-  PACKAGE_NAME: env.REGISTRY/env.USERNAME/env.IMAGE_NAME:env.TAG
-
   VM_NAME: geo-router
   VM_REGION: europe-west1-b
 
@@ -62,6 +60,6 @@ jobs:
             --quiet \
             --command="sudo docker stop georouter-api; \
               sudo docker rm georouter-api; \
-              sudo docker image rm ${{ env.PACKAGE_NAME }}; \
-              sudo docker pull ${{ env.PACKAGE_NAME }}; \
-              sudo docker run -itd -p 80:80 --name georouter-api ${{ env.PACKAGE_NAME }};"
+              sudo docker image rm ${{ env.REGISTRY }}/${{ env.USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.TAG }}; \
+              sudo docker pull ${{ env.REGISTRY }}/${{ env.USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.TAG }}; \
+              sudo docker run -itd -p 80:80 --name georouter-api ${{ env.REGISTRY }}/${{ env.USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.TAG }};"
