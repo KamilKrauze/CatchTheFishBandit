@@ -5,64 +5,69 @@ from flask import Flask, jsonify, url_for, json
 app = Flask(__name__)
 app.debug = True
 
-
 @app.route('/')
-def get_atms():
-    # Define JSON file
-    with open("HSBC_atms.json") as json_file:
+def index():
+    
+    return 'Hello World!'
 
-        # Convert JSON file to Python
-        data = json.load(json_file)
-        data = data['data'][0]['Brand']
 
-        # initializing lists
-        latitude = []
-        longitude = []
-        id = []
-        street = []
-        town = []
-        postcode = []
-        brand = []
-        country = []
-        languages = []
-        services = []
-        currencies = []
+# @app.route('/misc')
+# def get_atms():
+#     # Define JSON file
+#     with open("HSBC_atms.json") as json_file:
 
-        # separating data into lists
-        for i in data:
-            for j in i['ATM']:
-                id.append(j['Identification'])
-                languages.append(j['SupportedLanguages'])
-                services.append(j['ATMServices'])
-                currencies.append(j['SupportedCurrencies'])
-                brand.append(i['BrandName'])
-                country.append(j['Location']['PostalAddress']['Country'])
-                street.append(j['Location']['PostalAddress']['StreetName'])
-                town.append(j['Location']['PostalAddress']['TownName'])
-                latitude.append(j['Location']['PostalAddress']['GeoLocation']['GeographicCoordinates']['Latitude'])
-                longitude.append(j['Location']['PostalAddress']['GeoLocation']['GeographicCoordinates']['Longitude'])
-                postcode.append(j['Location']['PostalAddress']['PostCode'])
+#         # Convert JSON file to Python
+#         data = json.load(json_file)
+#         data = data['data'][0]['Brand']
 
-    latitude = list(map(float, latitude))
-    longitude = list(map(float, longitude))
+#         # initializing lists
+#         latitude = []
+#         longitude = []
+#         id = []
+#         street = []
+#         town = []
+#         postcode = []
+#         brand = []
+#         country = []
+#         languages = []
+#         services = []
+#         currencies = []
 
-    # removing extra fluff
-    sep = ','
-    for s in range(len(street)):
-        street[s] = street[s].split(sep, 1)[0]
+#         # separating data into lists
+#         for i in data:
+#             for j in i['ATM']:
+#                 id.append(j['Identification'])
+#                 languages.append(j['SupportedLanguages'])
+#                 services.append(j['ATMServices'])
+#                 currencies.append(j['SupportedCurrencies'])
+#                 brand.append(i['BrandName'])
+#                 country.append(j['Location']['PostalAddress']['Country'])
+#                 street.append(j['Location']['PostalAddress']['StreetName'])
+#                 town.append(j['Location']['PostalAddress']['TownName'])
+#                 latitude.append(j['Location']['PostalAddress']['GeoLocation']['GeographicCoordinates']['Latitude'])
+#                 longitude.append(j['Location']['PostalAddress']['GeoLocation']['GeographicCoordinates']['Longitude'])
+#                 postcode.append(j['Location']['PostalAddress']['PostCode'])
 
-    for t in range(len(town)):
-        town[t] = town[t].split(sep, 1)[0]
-        town[t] = town[t].title()
+#     latitude = list(map(float, latitude))
+#     longitude = list(map(float, longitude))
 
-    # making marker points list
-    marker_points = []
-    for i in range(len(latitude)):
-        marker_points.append({'Latitude': latitude[i], 'Longitude': longitude[i], 'Brand': brand[i], 'Street': street[i],
-                            'Town': town[i], 'Country': country[i], 'PostCode': postcode[i], 'SupportedLanguages': languages[i],
-                            'SupportedCurrency': currencies[i], 'ATMServices': services[i], 'ID': id[i]})
+#     # removing extra fluff
+#     sep = ','
+#     for s in range(len(street)):
+#         street[s] = street[s].split(sep, 1)[0]
 
-    return jsonify({'ATMs': marker_points})
+#     for t in range(len(town)):
+#         town[t] = town[t].split(sep, 1)[0]
+#         town[t] = town[t].title()
+
+#     # making marker points list
+#     marker_points = []
+#     for i in range(len(latitude)):
+#         marker_points.append({'Latitude': latitude[i], 'Longitude': longitude[i], 'Brand': brand[i], 'Street': street[i],
+#                             'Town': town[i], 'Country': country[i], 'PostCode': postcode[i], 'SupportedLanguages': languages[i],
+#                             'SupportedCurrency': currencies[i], 'ATMServices': services[i], 'ID': id[i]})
+
+#     return jsonify({'ATMs': marker_points})
 
 
 if __name__ == '__main__':
