@@ -9,8 +9,11 @@ app.debug = True
 # def index():
     
 #     return 'Hello World!'
+    
 
-def parse_json():
+@app.route('/')
+def get_atms():
+    # Define JSON file
     with open("HSBC_atms.json") as json_file:
 
         # Convert JSON file to Python
@@ -64,13 +67,7 @@ def parse_json():
                             'Town': town[i], 'Country': country[i], 'PostCode': postcode[i], 'SupportedLanguages': languages[i],
                             'SupportedCurrency': currencies[i], 'ATMServices': services[i], 'ID': id[i]})
 
-    return jsonify({'ATMs': marker_points})
-
-@app.route('/')
-def get_atms():
-    return parse_json()
-    # Define JSON file
-    
+    return jsonify(marker_points, status=200, mimetype='application/json')
 
 
 if __name__ == '__main__':
