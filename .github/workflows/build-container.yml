@@ -69,3 +69,25 @@ jobs:
               sudo docker image rm ghcr.io/kamilkrauze/catchthefishbandit:frontend; \
               sudo docker pull ghcr.io/kamilkrauze/catchthefishbandit:frontend; \
               sudo docker run -itd -p 80:80 --name frontend ghcr.io/kamilkrauze/catchthefishbandit:frontend;"
+
+              
+
+  validate-container-on-VM:
+    runs-on: ubuntu-latest
+    needs: [updvm-container]
+    steps:
+      - name: Setup GCP SDK
+        uses: google-github-actions/setup-gcloud@v0.2.0
+        with:
+          service_account_key: ${{ secrets.GCLOUD_JSON_KEY }}
+
+      - name: Authenticate on GCP
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.GCLOUD_JSON_KEY }}'
+
+      - name: Validate container
+        run: |
+          gcloud compute ssh --project=${{ secrets.GCLOUD_PROJECT_ID }} \
+            --zone=${{ env.VM_REGION }} ${{ env.VM_NAME }} \
+            --command="sudo docker ps -a"
