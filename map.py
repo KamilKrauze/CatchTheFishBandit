@@ -37,7 +37,7 @@ duration = 0
 
 def get_directions_response(lat1, long1, lat2, long2):
     url = "https://api.openrouteservice.org/v2/directions/driving-car"
-    key = "5b3ce3597851110001cf62481da466da01ce401fb67b1356de21d338"
+    key = "5b3ce3597851110001cf62487760d7b1c29d4fa1be9d1a9dbe35179f"
     params = {"api_key": key, "start": str(long1) + "," + str(lat1), "end": str(long2) + "," + str(lat2)}
     response = requests.get(url, params=params)
     points = [(lat2, long2)]
@@ -51,7 +51,7 @@ def get_directions_response(lat1, long1, lat2, long2):
 
 def get_duration(lat1, long1, lat2, long2):
     url = "https://api.openrouteservice.org/v2/directions/driving-car"
-    key = "5b3ce3597851110001cf62481da466da01ce401fb67b1356de21d338"
+    key = "5b3ce3597851110001cf62487760d7b1c29d4fa1be9d1a9dbe35179f"
     params = {"api_key": key, "start": str(long1) + "," + str(lat1), "end": str(long2) + "," + str(lat2)}
     response = requests.get(url, params=params)
     time_traveled = 0
