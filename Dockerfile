@@ -4,6 +4,7 @@ COPY requirements.txt /home/
 RUN pip install -r /home/requirements.txt
 
 COPY data_framing.py /home/
+COPY HSBC_atms.json /home/
 
 ENTRYPOINT ["python"]
 CMD ["/home/data_framing.py"]
