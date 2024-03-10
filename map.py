@@ -1,3 +1,4 @@
+
 from geopy.geocoders import Nominatim
 import pandas as pd
 import requests
@@ -34,6 +35,21 @@ def create_map(response):
      # read the content of popup.html
      with open('./templates/popup.html', 'r') as f:
         popup_html = f.read()
+     
+def create_map(response):
+   # use the response
+   mls = response.json()['features'][0]['geometry']['coordinates']
+   points = [(i[1], i[0]) for i in mls[0]]
+   m = folium.Map()
+   # add marker for the start and ending points
+   for point in [points[0], points[-1]]:
+     # read the content of popup.html
+     with open('./templates/popup.html', 'r') as f:
+        popup_html = f.read()
+     # add a hidden form to the popup_html
+     popup_html += f"""
+        <a href="/geo_data?lat={point[0]}&lon={point[1]}">Go to coordinates</a>
+     """
      # create an IFrame using the HTML content
      iframe = IFrame(html=popup_html, width=500, height=300)
      # create a Popup using the IFrame
@@ -41,8 +57,8 @@ def create_map(response):
      folium.Marker(
         location=point,
         popup=popup,
-        tooltip='tooltip text'
-     ).add_to(m)
+        tooltip=f'Coordinates: {point}'
+     ).add_to(m) 
    # add the lines
    folium.PolyLine(points, weight=5, opacity=1).add_to(m)
    # create optimal zoom

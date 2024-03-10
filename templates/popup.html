@@ -4,12 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous"></script>
     <title>ATM Data</title>
 </head>
 <body class="bg-gray-200 p-6">
     <div class="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl">
         <div class="md:flex">
             <div class="p-8">
+                <div class="p-8" id="atmData">
                 <div class="uppercase tracking-wide text-sm text-indigo-500 font-semibold">ATM Identification: A24A0579</div>
                 <p class="text-black font-bold">Supported Languages: <span class="text-gray-500 text-sm"> en, fr, es, de</span></p>
                 <p class="text-black font-bold">ATM Services: <span class="text-gray-500 text-sm"> CashWithdrawal, PINChange, PINActivation, PINUnblock, Balance, MiniStatement, ChequeDeposits, CashDeposits</span></p>
@@ -19,6 +21,7 @@
                 <p class="text-black font-bold">GeoLocation: <span class="text-gray-500 text-sm">Latitude: 52.926777, Longitude: -1.215878</span></p>
             </div>
         </div>
+    </div>
     </div>
 </body>
 </html>

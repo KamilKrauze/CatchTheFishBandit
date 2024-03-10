@@ -34,20 +34,44 @@
                 </span>
                 London <span class="hidden sm:inline-flex sm:ms-2">England</span>
             </li>
+
+            <!-- <span class="distance bg-gray-100 text-gray-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded me-2 dark:bg-gray-700 dark:text-gray-400 border border-gray-500">
+                {% if data and 'distance' in data %}
+                    <svg class="w-2.5 h-2.5 me-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm3.982 13.982a1 1 0 0 1-1.414 0l-3.274-3.274A1.012 1.012 0 0 1 9 10V6a1 1 0 0 1 2 0v3.586l2.982 2.982a1 1 0 0 1 0 1.414Z"/>
+                    </svg>
+                    Distance: {{ data['distance'] }} meters
+                {% else %}
+                    Distance information not available
+                {% endif %}
+            </span>
+            <span class="duration bg-gray-100 text-gray-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-400 border border-gray-500">
+                {% if data and 'duration' in data %}
+                    <svg class="w-2.5 h-2.5 me-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm3.982 13.982a1 1 0 0 1-1.414 0l-3.274-3.274A1.012 1.012 0 0 1 9 10V6a1 1 0 0 1 2 0v3.586l2.982 2.982a1 1 0 0 1 0 1.414Z"/>
+                    </svg>
+                    Duration: {{ data['duration'] }} seconds
+                {% else %}
+                    Duration information not available
+                {% endif %}
+            </span>
+             -->
+            
+    
         </ol>
         <form id="atmForm" style="display: none;">
-    <div class="flex">
-        <label for="atm_id" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">ATM ID</label>
-        <div class="relative w-full">
-            <input type="atm_id" id="atm_id" class="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-e-lg rounded-s-gray-100 rounded-s-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500" placeholder="Enter a new machine" required />
-            <button type="submit" class="absolute top-0 end-0 p-2.5 h-full text-sm font-medium text-white bg-blue-700 rounded-e-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
-                </svg>
-            </button>
+        <div class="flex">
+            <label for="atm_id" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">ATM ID</label>
+            <div class="relative w-full">
+                <input type="atm_id" id="atm_id" class="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-e-lg rounded-s-gray-100 rounded-s-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:border-blue-500" placeholder="Enter a new machine" required />
+                <button type="submit" class="absolute top-0 end-0 p-2.5 h-full text-sm font-medium text-white bg-blue-700 rounded-e-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                    <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                    </svg>
+                </button>
+            </div>
         </div>
-    </div>
-</form>
+        </form>
    
     </div>
 
@@ -69,6 +93,26 @@
             form.style.display = "none";
         }
     });
+</script>
+<script>
+    window.onload = function() {
+        var distanceElement = document.querySelector('.distance');
+        var durationElement = document.querySelector('.duration');
+
+        if (distanceElement && distanceElement.textContent.includes('meters')) {
+            // log the distance data
+            console.log('Distance: ' + distanceElement.textContent);
+            console.log('Distance data exists');
+        } else {
+            console.log('Distance data does not exist');
+        }
+
+        if (durationElement && durationElement.textContent.includes('seconds')) {
+            console.log('Duration data exists');
+        } else {
+            console.log('Duration data does not exist');
+        }
+    }
 </script>
 </body>
 </html>
