@@ -14,7 +14,7 @@ app.debug = True
 @app.route('/')
 def get_atms():
     # Define JSON file
-    with open("HSBC_atms.json") as json_file:
+    with open("./HSBC_atms.json") as json_file:
 
         # Convert JSON file to Python
         data = json.load(json_file)
