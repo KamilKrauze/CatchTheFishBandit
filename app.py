@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-import flask
 from flask import Flask, render_template, request, jsonify
 import requests
 from flask_cors import CORS, cross_origin
@@ -8,10 +7,13 @@ app = Flask(__name__, static_folder='static', template_folder='templates')
 app.debug = True
 CORS(app, resources={r"/*": {"origins": "*"}})
 
-def get_map_from_cloud(atm_id):
+@app.route('/')
+def home():
+    return render_template('search.html')
+
+def get_map_from_cloud(atm_id, location):
     # Make a GET request to the cloud server
-    url = f"http://34.79.39.138/{atm_id}"
-    # url = f"http://route.quack-team.com/{atm_id}/"
+    url = f"http://34.79.39.138/address/{location}/{atm_id}"
     response = requests.get(url)
 
     # Check if the request was successful
@@ -54,19 +56,15 @@ def geo_data():
     print('Data:', data)
     return data
 
-@app.route('/')
-def home():
-    return render_template('search.html')
-
 @app.route('/generate_map', methods=['GET', 'POST'])
 def map():
     print('Request:', request.form)
     current_location = request.args.get('current_location')
     atm_id = request.args.get('atm_id')
-    get_map_from_cloud(atm_id)
+    get_map_from_cloud(atm_id, current_location)
     data = get_distance_and_time(atm_id)
     print('Data:', data)
     return render_template('custom_map.html', data=data)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=80)
+    app.run(host='0.0.0.0', port=3000) 
