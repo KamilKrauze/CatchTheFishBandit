@@ -8,7 +8,34 @@ app = Flask(__name__)
 app.debug = True
 CORS(app)
 
-@app.route('/',  methods=['GET', 'OPTIONS'])
+@app.route('/latlng')
+def get_atm_latlng():
+
+    with open("home/HSBC_atms.json") as json_file:
+
+        # Convert JSON file to Python
+        data = json.load(json_file)
+        data = data['data'][0]['Brand']
+
+        # initializing lists
+        latitude = []
+        longitude = []
+        id = []
+
+        # separating data into lists
+        for i in data:
+            for j in i['ATM']:
+                id.append(j['Identification'])
+                latitude.append(j['Location']['PostalAddress']['GeoLocation']['GeographicCoordinates']['Latitude'])
+                longitude.append(j['Location']['PostalAddress']['GeoLocation']['GeographicCoordinates']['Longitude'])
+
+        points = []
+        for i in range(len(latitude)):
+            points.append({'lats':latitude[i], 'longs': longitude[i]})
+
+        print(jsonify(points))
+
+@app.route('/')
 def get_atms():
     # Define JSON file
     with open("home/HSBC_atms.json") as json_file:
