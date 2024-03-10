@@ -23,23 +23,31 @@ df_sites = pd.DataFrame(
 geolocator = Photon(user_agent="measurements")
 
 def get_directions_response(lat1, long1, lat2, long2):
-   url = "https://api.openrouteservice.org/v2/directions/driving-car"
-   key = "5b3ce3597851110001cf62481da466da01ce401fb67b1356de21d338"
-   params = {"api_key": key, "start": str(long1) + "," + str(lat1), "end": str(long2) + "," + str(lat2)}
-   response = requests.get(url, params=params)
-   data = json.loads(response.text)
-   mls = data['features'][0]['geometry']['coordinates']
-   points = [t[::-1] for t in mls]
+    url = "https://api.openrouteservice.org/v2/directions/driving-car"
+    key = "5b3ce3597851110001cf62481da466da01ce401fb67b1356de21d338"
+    params = {"api_key": key, "start": str(long1) + "," + str(lat1), "end": str(long2) + "," + str(lat2)}
+    response = requests.get(url, params=params)
+    points = [(lat2, long2)]
 
-   return points
+    if response.status_code == 200:
+        data = json.loads(response.text)
+        mls = data['features'][0]['geometry']['coordinates']
+        points = [t[::-1] for t in mls]
+
+    return points
 
 def get_duration(lat1, long1, lat2, long2):
-   url = "https://api.openrouteservice.org/v2/directions/driving-car"
-   key = "5b3ce3597851110001cf62481da466da01ce401fb67b1356de21d338"
-   params = {"api_key": key, "start": str(long1) + "," + str(lat1), "end": str(long2) + "," + str(lat2)}
-   response = requests.get(url, params=params)
-   data = json.loads(response.text)
-   return data["features"][0]["properties"]["segments"][0]["duration"]
+    url = "https://api.openrouteservice.org/v2/directions/driving-car"
+    key = "5b3ce3597851110001cf62481da466da01ce401fb67b1356de21d338"
+    params = {"api_key": key, "start": str(long1) + "," + str(lat1), "end": str(long2) + "," + str(lat2)}
+    response = requests.get(url, params=params)
+    time_traveled = 0
+
+    if response.status_code == 200:
+        data = json.loads(response.text)
+        time_traveled = data["features"][0]["properties"]["segments"][0]["duration"]
+
+    return time_traveled
 
 def create_map(location):
     distance = 0
@@ -84,8 +92,10 @@ def create_map(location):
 
     folium.map.Marker(location,
         icon=DivIcon(
-            html='<div style="font-size: 20pt">total distance: ' + str(distance) + 'km</div><div style="font-size: 20pt">total duration: ' + str(duration/60) + 'h</div>',
-            )
+            html='<div style="background-color: #EBEBEB"><div style="font-size: 10pt">total distance: ' + str(distance) + 'km</div><div style="font-size: 10pt">total duration: ' + str(duration/60) + 'h</div></div>',
+            ),
+        icon_size=(100, 100),
+        icon_anchor=(0, 0)
         ).add_to(m)
     return m.get_root().render()
 
