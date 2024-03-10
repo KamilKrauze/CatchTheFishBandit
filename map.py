@@ -97,7 +97,7 @@ def create_map(location, limit):
     for index, atm in enumerate(visited_atms): 
         curr_atm = df_sites[df_sites['Identification'] == atm]
 
-        with open('templates/popup.html', 'r') as f:
+        with open('home/templates/popup.html', 'r') as f:
             popup_html = f.read()
         # create an IFrame using the HTML content
         iframe = IFrame(html=popup_html, width=500, height=300)
